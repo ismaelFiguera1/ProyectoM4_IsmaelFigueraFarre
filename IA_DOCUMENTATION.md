@@ -24,6 +24,7 @@ La IA no actúa de forma autónoma. Cada acción fue solicitada explícitamente 
 ### Qué se pidió
 
 Construir la base limpia del proyecto para la Fase 0:
+
 - Entender el estado actual del proyecto (ya tenía Vite + React + TypeScript inicializado)
 - Limpiar los archivos de demo generados por Vite
 - Crear la estructura de carpetas basada en features
@@ -56,6 +57,7 @@ La idea detrás de esta estructura es que cada funcionalidad viva junta. Lo espe
 **Paso 3 — Router**
 
 Se creó `src/app/router/router.tsx` con `createBrowserRouter` de React Router. Define dos reglas:
+
 - `/` → renderiza `AppLayout` con `HomePage` dentro
 - `*` → cualquier URL desconocida → renderiza `NotFoundPage`
 
@@ -73,12 +75,50 @@ Se crearon `HomePage.tsx` y `NotFoundPage.tsx` como componentes simples. No sabe
 
 Tras implementar la estructura, la IA explicó el flujo completo de arranque de la app archivo por archivo, cubriendo cada concepto nuevo que aparecía (SPA, componentes, JSX, router, layout, `<Outlet />`, `<Link />`).
 
-![Explicación 1](./README_Images/1.png)
-![Explicación 2](./README_Images/2.png)
-![Explicación 3](./README_Images/3.png)
-![Explicación 4](./README_Images/4.png)
-![Explicación 5](./README_Images/5.png)
+![Explicación 1](./Readme_Images/1.png)
+![Explicación 2](./Readme_Images/2.png)
+![Explicación 3](./Readme_Images/3.png)
+![Explicación 4](./Readme_Images/4.png)
+![Explicación 5](./Readme_Images/5.png)
 
+---
+
+## Sesión: Fase 1 — Autenticación
+
+**Fecha:** 29/04/2026
+
+### Qué implementó la IA
+
+- Configuración base de Firebase con variables de entorno (`.env`, `.env.example`, `firebase.ts`)
+- Servicio de autenticación con registro, login y logout (`authService.ts`)
+- Contexto de autenticación para exponer el usuario a toda la app (`AuthContext.tsx`, `useAuth`)
+- Páginas de login y registro con formularios controlados y estados de carga
+- Protección de rutas privadas (`ProtectedRoute.tsx`)
+- Dashboard mínimo para validar el flujo completo
+- Router actualizado con rutas públicas y privadas
+- Mensajes de error específicos por código de Firebase (`getAuthErrorMessage`)
+- Configuración de debug en VS Code (`launch.json`)
+
+### Qué explicó la IA
+
+La IA explicó cada pieza antes o después de implementarla. Los conceptos cubiertos fueron: qué es Firebase Auth y cómo se relaciona con una llamada a API REST, qué es React Context y para qué sirve (comparado con pasar props manualmente), cómo funciona `onAuthStateChanged` para mantener la sesión al recargar, qué es un controlled component, cómo funciona `ProtectedRoute` como equivalente al middleware de auth en Laravel/PHP, y cómo los códigos de error de Firebase funcionan igual que los códigos HTTP.
+
+### Resultado verificado
+
+El usuario probó el flujo completo: registro, login, persistencia de sesión al recargar, logout y protección de rutas. Todo funcionó correctamente.
+
+<!-- capturas de la sesión Fase 1 -->
+
+![Explicación 6](./Readme_Images/6.png)
+![Explicación 7](./Readme_Images/7.png)
+![Explicación 8](./Readme_Images/8.png)
+![Explicación 9](./Readme_Images/9.png)
+![Explicación 10](./Readme_Images/10.png)
+![Explicación 11](./Readme_Images/11.png)
+![Explicación 12](./Readme_Images/12.png)
+![Explicación 13](./Readme_Images/13.png)
+![Explicación 14](./Readme_Images/14.png)
+![Explicación 15](./Readme_Images/15.png)
 
 ---
 
