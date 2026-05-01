@@ -5,6 +5,7 @@
 
 import { initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
+import { getFirestore } from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -20,3 +21,6 @@ const app = initializeApp(firebaseConfig)
 
 // auth es la instancia que usarán los servicios de autenticación
 export const auth = getAuth(app)
+
+// db es la instancia de Firestore que usará el servicio de tareas
+export const db = getFirestore(app)

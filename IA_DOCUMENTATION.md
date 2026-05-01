@@ -122,6 +122,38 @@ El usuario probó el flujo completo: registro, login, persistencia de sesión al
 
 ---
 
+## Sesión: Fase 2 — Tareas con Firestore
+
+**Fecha:** 01/05/2026
+
+### Qué implementó la IA
+
+- Configuración de Firestore en `firebase.ts` (exportación de `db`)
+- Modelo de tarea (`task.ts`) con los campos: `id`, `title`, `description`, `completed`, `userId`, `createdAt`
+- Servicio de tareas (`taskService.ts`) con `createTask` y `getUserTasks`, filtrando siempre por `userId` desde Firestore
+- Formulario mínimo de creación de tareas (`TaskForm.tsx`) con estados de carga y error
+- Lista de tareas (`TaskList.tsx`) con estado vacío
+- Dashboard actualizado para coordinar carga de tareas, formulario y listado
+- Diagnóstico y resolución de error por índice compuesto faltante en Firestore
+
+### Qué explicó la IA
+
+La IA explicó cómo funciona Firestore (colecciones, documentos, `addDoc`, `getDocs`, `query`, `where`, `orderBy`), por qué filtrar por `userId` en Firestore y no en el frontend, el patrón de callback `onTaskCreated` para recargar la lista tras crear una tarea, y qué son los índices compuestos en Firestore y por qué son necesarios al combinar `where` + `orderBy`.
+
+### Resultado verificado
+
+El usuario probó el flujo completo: crear una tarea, verla aparecer en la lista, recargar la página y comprobar que persiste. Todo funcionó correctamente.
+
+<!-- capturas de la sesión Fase 2 -->
+
+![Explicación 16](./Readme_Images/16.png)
+![Explicación 17](./Readme_Images/17.png)
+![Explicación 18](./Readme_Images/18.png)
+![Explicación 19](./Readme_Images/19.png)
+![Explicación 21](./Readme_Images/21.png)
+
+---
+
 ## Criterio de uso
 
 La IA se usa como **par técnico y guía de aprendizaje**, no como generador automático de código.
