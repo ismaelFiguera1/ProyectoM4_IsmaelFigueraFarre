@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { logout } from '../services/authService'
-import { getUserTasks } from '../../tasks/services/taskService'
+import { getUserTasks, toggleTaskCompleted, updateTask, deleteTask } from '../../tasks/services/taskService'
 import { TaskForm } from '../../tasks/components/TaskForm'
 import { TaskList } from '../../tasks/components/TaskList'
 import type { Task } from '../../tasks/types/task'
@@ -18,6 +18,7 @@ export function DashboardPage() {
   const [tasks, setTasks] = useState<Task[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [actionLoading, setActionLoading] = useState(false)
 
   async function loadTasks() {
     if (!user) return
@@ -39,6 +40,39 @@ export function DashboardPage() {
     loadTasks()
   }, [user])
 
+  async function handleToggle(taskId: string, currentValue: boolean) {
+    if (!user) return
+    setActionLoading(true)
+    try {
+      await toggleTaskCompleted(taskId, currentValue)
+      loadTasks()
+    } finally {
+      setActionLoading(false)
+    }
+  }
+
+  async function handleUpdate(taskId: string, title: string, description: string) {
+    if (!user) return
+    setActionLoading(true)
+    try {
+      await updateTask(taskId, title, description)
+      loadTasks()
+    } finally {
+      setActionLoading(false)
+    }
+  }
+
+  async function handleDelete(taskId: string) {
+    if (!user) return
+    setActionLoading(true)
+    try {
+      await deleteTask(taskId)
+      loadTasks()
+    } finally {
+      setActionLoading(false)
+    }
+  }
+
   async function handleLogout() {
     await logout()
     navigate('/login')
@@ -56,7 +90,15 @@ export function DashboardPage() {
 
       {loading && <p>Cargando tareas...</p>}
       {error && <p>{error}</p>}
-      {!loading && !error && <TaskList tasks={tasks} />}
+      {!loading && !error && (
+        <TaskList
+          tasks={tasks}
+          onToggle={handleToggle}
+          onUpdate={handleUpdate}
+          onDelete={handleDelete}
+          actionLoading={actionLoading}
+        />
+      )}
     </div>
   )
 }

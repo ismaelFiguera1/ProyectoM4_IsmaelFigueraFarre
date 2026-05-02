@@ -154,6 +154,36 @@ El usuario probó el flujo completo: crear una tarea, verla aparecer en la lista
 
 ---
 
+## Sesión: Fase 3 — CRUD completo de tareas
+
+**Fecha:** 02/05/2026
+
+### Qué implementó la IA
+
+- Tres funciones nuevas en `taskService.ts`: `toggleTaskCompleted`, `updateTask` y `deleteTask` usando `updateDoc` y `deleteDoc` de Firestore
+- Separación del formulario de edición en su propio componente `TaskEditForm.tsx`
+- `TaskList.tsx` refactorizado para gestionar solo el estado de edición (`editingId`) y delegar el formulario a `TaskEditForm`
+- Handlers en `DashboardPage.tsx` para las tres nuevas operaciones, con comprobación de usuario autenticado y estado `actionLoading`
+- Botones deshabilitados durante operaciones en curso para evitar acciones duplicadas
+
+### Qué explicó la IA
+
+La IA explicó la diferencia entre `collection` (apunta a toda la colección) y `doc` (apunta a un documento concreto), equivalente a un `WHERE id = X` en SQL. También explicó por qué el estado de edición vive en `TaskList` y no en `DashboardPage` (es información puramente visual), el patrón `finally` para garantizar que `actionLoading` vuelve a `false` aunque falle la operación, y por qué `if (!user) return` en los handlers es una segunda línea de defensa además de las reglas de Firestore.
+
+### Resultado verificado
+
+El usuario probó el flujo completo: marcar tareas como completadas, editarlas, eliminarlas con confirmación y comprobar que los cambios persisten al recargar. Todo funcionó correctamente.
+
+<!-- capturas de la sesión Fase 3 -->
+
+![Explicación 22](./Readme_Images/22.png)
+![Explicación 23](./Readme_Images/23.png)
+![Explicación 24](./Readme_Images/24.png)
+![Explicación 25](./Readme_Images/25.png)
+![Explicación 26](./Readme_Images/26.png)
+
+---
+
 ## Criterio de uso
 
 La IA se usa como **par técnico y guía de aprendizaje**, no como generador automático de código.

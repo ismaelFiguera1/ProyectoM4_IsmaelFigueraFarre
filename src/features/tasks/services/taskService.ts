@@ -11,6 +11,9 @@ import {
   where,
   orderBy,
   getDocs,
+  doc,
+  updateDoc,
+  deleteDoc,
 } from 'firebase/firestore'
 import { db } from '../../../shared/lib/firebase'
 import type { Task } from '../types/task'
@@ -49,4 +52,25 @@ export async function getUserTasks(userId: string): Promise<Task[]> {
     id: doc.id,
     ...doc.data(),
   })) as Task[]
+}
+
+// doc(db, 'tasks', taskId) apunta al documento concreto dentro de la colección.
+// Es el equivalente a WHERE id = taskId en SQL.
+export async function toggleTaskCompleted(
+  taskId: string,
+  currentValue: boolean
+): Promise<void> {
+  await updateDoc(doc(db, 'tasks', taskId), { completed: !currentValue })
+}
+
+export async function updateTask(
+  taskId: string,
+  title: string,
+  description: string
+): Promise<void> {
+  await updateDoc(doc(db, 'tasks', taskId), { title, description })
+}
+
+export async function deleteTask(taskId: string): Promise<void> {
+  await deleteDoc(doc(db, 'tasks', taskId))
 }
