@@ -1,0 +1,98 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Comprueba que hay un usuario autenticado con Firebase Auth.
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Comprueba que la tarea existente pertenece al usuario autenticado.
+    function isTaskOwner() {
+      return isSignedIn()
+        && resource.data.userId == request.auth.uid;
+    }
+
+    // Comprueba que al crear una tarea, el userId enviado coincide con el uid del usuario autenticado.
+    function isCreatingOwnTask() {
+      return isSignedIn()
+        && request.resource.data.userId == request.auth.uid;
+    }
+
+    // Una tarea solo puede tener estos campos.
+    function hasValidTaskFields() {
+      return request.resource.data.keys().hasOnly([
+        "title",
+        "description",
+        "completed",
+        "userId",
+        "createdAt",
+        "updatedAt"
+      ]);
+    }
+
+    // Para que una tarea sea válida, debe tener estos campos mínimos.
+    function hasRequiredTaskFields() {
+      return request.resource.data.keys().hasAll([
+        "title",
+        "description",
+        "completed",
+        "userId",
+        "createdAt"
+      ]);
+    }
+
+    // Define los tipos básicos de los campos.
+    function hasValidTaskTypes() {
+      return request.resource.data.title is string
+        && request.resource.data.description is string
+        && request.resource.data.completed is bool
+        && request.resource.data.userId is string;
+    }
+
+    /*
+      Al crear la tarea valida:
+
+      1. Solo campos permitidos.
+      2. Campos obligatorios presentes.
+      3. Tipos correctos.
+      4. userId igual al uid del usuario autenticado.
+    */
+    function isValidTaskCreate() {
+      return hasValidTaskFields()
+        && hasRequiredTaskFields()
+        && hasValidTaskTypes()
+        && isCreatingOwnTask();
+    }
+
+    // Permite editar la tarea, pero evita cambiar el dueño de la tarea.
+    function isValidTaskUpdate() {
+      return hasValidTaskFields()
+        && hasRequiredTaskFields()
+        && hasValidTaskTypes()
+        && isTaskOwner()
+        && request.resource.data.userId == resource.data.userId
+        && request.resource.data.userId == request.auth.uid;
+    }
+    
+    /*
+    Para la colección tasks:
+    
+      - crear solo si la tarea es del usuario autenticado
+      - leer solo si la tarea es del usuario autenticado
+      - editar solo si la tarea es del usuario autenticado
+      - eliminar solo si la tarea es del usuario autenticado
+    */
+
+    match /tasks/{taskId} {
+      allow create: if isValidTaskCreate();
+
+      allow read: if isTaskOwner();
+
+      allow update: if isValidTaskUpdate();
+
+      allow delete: if isTaskOwner();
+    }
+  }
+}
