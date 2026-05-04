@@ -9,6 +9,7 @@ import { logout } from '../services/authService'
 import { getUserTasks, toggleTaskCompleted, updateTask, deleteTask } from '../../tasks/services/taskService'
 import { TaskForm } from '../../tasks/components/TaskForm'
 import { TaskList } from '../../tasks/components/TaskList'
+import { SendTaskSummaryButton } from '../../tasks/components/SendTaskSummaryButton'
 import type { Task } from '../../tasks/types/task'
 
 export function DashboardPage() {
@@ -87,6 +88,11 @@ export function DashboardPage() {
       </div>
 
       <TaskForm userId={user!.uid} onTaskCreated={loadTasks} />
+
+      {/* Solo se muestra si el usuario tiene email y las tareas ya cargaron */}
+      {!loading && !error && user?.email && (
+        <SendTaskSummaryButton userEmail={user.email} tasks={tasks} />
+      )}
 
       {loading && <p>Cargando tareas...</p>}
       {error && <p>{error}</p>}

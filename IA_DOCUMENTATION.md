@@ -181,6 +181,44 @@ El usuario probó el flujo completo: marcar tareas como completadas, editarlas, 
 ![Explicación 24](./Readme_Images/24.png)
 ![Explicación 25](./Readme_Images/25.png)
 ![Explicación 26](./Readme_Images/26.png)
+![Explicación 27](./Readme_Images/27.png)
+
+---
+
+## Sesión: Fase 6 — Envío de resumen de tareas por email con AWS SES
+
+**Fecha:** 04/05/2026
+
+### Herramientas utilizadas
+
+- **ChatGPT** — configuración de AWS: creación de cuenta, verificación de email en SES, creación de usuario IAM y credenciales de acceso.
+- **Claude Code** — implementación completa del código de la fase.
+
+### Qué implementó Claude Code
+
+- Vercel Function en `api/send-task-summary.ts` que recibe el resumen por POST y lo envía con AWS SES
+- Helper `buildTaskSummary.ts` que genera el texto plano del resumen a partir de las tareas
+- Servicio frontend `taskEmailService.ts` que hace el fetch al endpoint
+- Componente `SendTaskSummaryButton.tsx` con estados de envío, éxito y error
+- Integración del botón en `DashboardPage.tsx`
+- Configuración de debug en `.vscode/launch.json` con dos perfiles: Vite y Vercel
+- Logs de servidor en la Vercel Function para depurar el flujo desde la terminal
+
+### Qué explicó Claude Code
+
+La IA explicó por qué las credenciales AWS no pueden ir en el frontend (variables `VITE_` se exponen al navegador), qué es una Vercel Function y por qué actúa como capa segura entre React y AWS SES, la diferencia entre el puerto de la app (`3000`) y el puerto del inspector de Node.js (`9229`), y por qué el debugger de Chrome no puede acceder a código que corre en Node.js.
+
+### Resultado verificado
+
+El usuario depuró el flujo completo con breakpoints en el frontend y logs en la terminal del servidor. El email se envía correctamente y la app muestra los estados de envío, éxito y error.
+
+<!-- capturas de la sesión Fase 6 -->
+
+![Explicación 28](./Readme_Images/28.png)
+![Explicación 29](./Readme_Images/29.png)
+![Explicación 30](./Readme_Images/30.png)
+![Explicación 31](./Readme_Images/31.png)
+![Explicación 32](./Readme_Images/32.png)
 
 ---
 
