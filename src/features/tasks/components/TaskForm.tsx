@@ -1,8 +1,3 @@
-// Formulario de creación de tareas.
-// Recibe onTaskCreated como callback para que el componente padre
-// pueda recargar la lista cuando se cree una tarea nueva.
-// No sabe nada de Firestore directamente, delega en taskService.
-
 import { useState } from 'react'
 import { createTask } from '../services/taskService'
 
@@ -36,31 +31,40 @@ export function TaskForm({ userId, onTaskCreated }: TaskFormProps) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="title">Título</label>
-        <input
-          id="title"
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-        />
-      </div>
+      <fieldset>
+        <div className="mb-3">
+          <label htmlFor="title" className="form-label">Título</label>
+          <input
+            className="form-control"
+            id="title"
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Nombre de la tarea"
+            required
+          />
+        </div>
 
-      <div>
-        <label htmlFor="description">Descripción</label>
-        <textarea
-          id="description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-      </div>
+        <div className="mb-3">
+          <label htmlFor="description" className="form-label">Descripción</label>
+          <textarea
+            className="form-control"
+            id="description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Descripción opcional"
+            rows={3}
+          />
+        </div>
+      </fieldset>
 
-      {error && <p>{error}</p>}
+      {error && <div className="alert alert-danger py-2">{error}</div>}
 
-      <button type="submit" disabled={loading}>
-        {loading ? 'Guardando...' : 'Crear tarea'}
-      </button>
+      <footer>
+        <button className="btn btn-primary w-100" type="submit" disabled={loading}>
+          {loading ? 'Guardando...' : 'Crear tarea'}
+        </button>
+      </footer>
     </form>
   )
 }

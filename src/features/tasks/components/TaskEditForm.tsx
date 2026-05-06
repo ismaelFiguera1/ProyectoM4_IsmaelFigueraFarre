@@ -1,8 +1,3 @@
-// Formulario de edición de una tarea existente.
-// Se muestra inline cuando el usuario pulsa "Editar" en TaskList.
-// No sabe nada de Firestore: recibe los valores actuales y llama
-// a onSave con los nuevos valores para que el padre los guarde.
-
 import { useState } from 'react'
 import type { Task } from '../types/task'
 
@@ -24,28 +19,35 @@ export function TaskEditForm({ task, onSave, onCancel }: TaskEditFormProps) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="edit-title">Título</label>
-        <input
-          id="edit-title"
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-        />
-      </div>
+      <fieldset>
+        <div className="mb-2">
+          <label htmlFor="edit-title" className="form-label small">Título</label>
+          <input
+            className="form-control form-control-sm"
+            id="edit-title"
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+          />
+        </div>
 
-      <div>
-        <label htmlFor="edit-description">Descripción</label>
-        <textarea
-          id="edit-description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-      </div>
+        <div className="mb-3">
+          <label htmlFor="edit-description" className="form-label small">Descripción</label>
+          <textarea
+            className="form-control form-control-sm"
+            id="edit-description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            rows={2}
+          />
+        </div>
+      </fieldset>
 
-      <button type="submit">Guardar</button>
-      <button type="button" onClick={onCancel}>Cancelar</button>
+      <footer className="d-flex gap-2">
+        <button className="btn btn-primary btn-sm" type="submit">Guardar</button>
+        <button className="btn btn-outline-secondary btn-sm" type="button" onClick={onCancel}>Cancelar</button>
+      </footer>
     </form>
   )
 }

@@ -1,110 +1,51 @@
-// Página principal privada. Solo accesible si hay usuario autenticado.
-// Coordina la carga de tareas, el formulario de creación y el listado.
-// Es el componente contenedor: gestiona el estado y se lo pasa a los hijos.
-
-import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
-import { logout } from '../services/authService'
-import { getUserTasks, toggleTaskCompleted, updateTask, deleteTask } from '../../tasks/services/taskService'
-import { TaskForm } from '../../tasks/components/TaskForm'
-import { TaskList } from '../../tasks/components/TaskList'
-import { SendTaskSummaryButton } from '../../tasks/components/SendTaskSummaryButton'
-import type { Task } from '../../tasks/types/task'
+import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export function DashboardPage() {
-  const { user } = useAuth()
-  const navigate = useNavigate()
-
-  const [tasks, setTasks] = useState<Task[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
-  const [actionLoading, setActionLoading] = useState(false)
-
-  async function loadTasks() {
-    if (!user) return
-    setLoading(true)
-    setError('')
-
-    try {
-      const userTasks = await getUserTasks(user.uid)
-      setTasks(userTasks)
-    } catch (err) {
-      console.error('Error al cargar tareas:', err)
-      setError('No se pudieron cargar las tareas.')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    loadTasks()
-  }, [user])
-
-  async function handleToggle(taskId: string, currentValue: boolean) {
-    if (!user) return
-    setActionLoading(true)
-    try {
-      await toggleTaskCompleted(taskId, currentValue)
-      loadTasks()
-    } finally {
-      setActionLoading(false)
-    }
-  }
-
-  async function handleUpdate(taskId: string, title: string, description: string) {
-    if (!user) return
-    setActionLoading(true)
-    try {
-      await updateTask(taskId, title, description)
-      loadTasks()
-    } finally {
-      setActionLoading(false)
-    }
-  }
-
-  async function handleDelete(taskId: string) {
-    if (!user) return
-    setActionLoading(true)
-    try {
-      await deleteTask(taskId)
-      loadTasks()
-    } finally {
-      setActionLoading(false)
-    }
-  }
-
-  async function handleLogout() {
-    await logout()
-    navigate('/login')
-  }
+  const { user } = useAuth();
 
   return (
-    <div>
-      <div>
-        <h1>Mis tareas</h1>
-        <p>{user?.email}</p>
-        <button onClick={handleLogout}>Cerrar sesión</button>
-      </div>
+    <section>
+      <h4 className="text-dark mb-4">Inicio</h4>
 
-      <TaskForm userId={user!.uid} onTaskCreated={loadTasks} />
+      <article className="card shadow-sm border-0 mb-4">
+        <div className="card-body p-4">
+          <h5 className="card-title text-primary mb-3">
+            ¡Bienvenido/a a TaskApp!
+          </h5>
+          <p className="text-muted mb-4">
+            Desde aquí puedes gestionar tus tareas de forma simple y efectiva.
+          </p>
 
-      {/* Solo se muestra si el usuario tiene email y las tareas ya cargaron */}
-      {!loading && !error && user?.email && (
-        <SendTaskSummaryButton userEmail={user.email} tasks={tasks} />
-      )}
+          <ul className="list-group list-group-flush mb-4">
+            <li className="list-group-item px-0">
+              <span className="text-muted small">Email</span>
+              <p className="fw-semibold mb-0">{user?.email}</p>
+            </li>
+            <li className="list-group-item px-0">
+              <span className="text-muted small">ID de usuario</span>
+              <p
+                className="fw-semibold mb-0 text-truncate"
+                style={{ maxWidth: "400px" }}
+              >
+                {user?.uid}
+              </p>
+            </li>
+            <li className="list-group-item px-0">
+              <span className="text-muted small">Cuenta creada</span>
+              <p className="fw-semibold mb-0">
+                {user?.metadata.creationTime
+                  ? new Date(user.metadata.creationTime).toLocaleDateString("es-ES")
+                  : "—"}
+              </p>
+            </li>
+          </ul>
 
-      {loading && <p>Cargando tareas...</p>}
-      {error && <p>{error}</p>}
-      {!loading && !error && (
-        <TaskList
-          tasks={tasks}
-          onToggle={handleToggle}
-          onUpdate={handleUpdate}
-          onDelete={handleDelete}
-          actionLoading={actionLoading}
-        />
-      )}
-    </div>
-  )
+          <Link className="btn btn-primary" to="/tasks">
+            Ver mis tareas
+          </Link>
+        </div>
+      </article>
+    </section>
+  );
 }

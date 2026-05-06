@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-ses": "^3.1041.0",
+    "bootstrap": "^5.3.8",
     "firebase": "^12.12.1",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",

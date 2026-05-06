@@ -9,11 +9,13 @@
 
 import { createBrowserRouter } from 'react-router-dom'
 import { AppLayout } from '../../shared/components/layout/AppLayout'
+import { DashboardLayout } from '../../shared/components/layout/DashboardLayout'
 import { ProtectedRoute } from '../../features/auth/components/ProtectedRoute'
 import { HomePage } from '../../features/home/pages/HomePage'
 import { LoginPage } from '../../features/auth/pages/LoginPage'
 import { RegisterPage } from '../../features/auth/pages/RegisterPage'
 import { DashboardPage } from '../../features/auth/pages/DashboardPage'
+import { TasksPage } from '../../features/tasks/pages/TasksPage'
 import { NotFoundPage } from '../../features/not-found/pages/NotFoundPage'
 
 export const router = createBrowserRouter([
@@ -41,8 +43,17 @@ export const router = createBrowserRouter([
     element: <ProtectedRoute />,
     children: [
       {
-        path: 'dashboard',
-        element: <DashboardPage />,
+        element: <DashboardLayout />,
+        children: [
+          {
+            path: 'dashboard',
+            element: <DashboardPage />,
+          },
+          {
+            path: 'tasks',
+            element: <TasksPage />,
+          },
+        ],
       },
     ],
   },

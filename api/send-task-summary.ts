@@ -63,6 +63,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   } catch (error) {
     console.error('[API] Error enviando email con AWS SES:', error)
     const message = error instanceof Error ? error.message : 'No se pudo enviar el email'
-    return res.status(500).json({ message })
+    const code = error instanceof Error ? (error as Error & { name: string }).name : 'UnknownError'
+    return res.status(500).json({ message, code })
   }
 }
