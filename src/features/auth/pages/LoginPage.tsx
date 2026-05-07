@@ -20,7 +20,7 @@ export function LoginPage() {
       await login(email, password);
       navigate("/dashboard");
     } catch (err) {
-      setError(getAuthErrorMessage(err.code));
+      setError(getAuthErrorMessage((err as { code?: string }).code));
     } finally {
       setLoading(false);
     }
