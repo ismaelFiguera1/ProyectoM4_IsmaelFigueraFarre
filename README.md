@@ -1,5 +1,7 @@
 # TaskApp
 
+### 🔗 https://proyecto-m4-henry.vercel.app/
+
 Aplicación web de gestión de tareas personales.
 
 Permite a cada usuario registrarse, iniciar sesión, crear y gestionar sus propias tareas, y recibir un resumen de ellas por correo electrónico. Los datos se almacenan en la nube por usuario y el envío de emails se realiza de forma segura desde el servidor, sin exponer credenciales en el frontend.
@@ -81,6 +83,8 @@ Estas variables **nunca llegan al frontend** — solo las usa la Vercel Function
 
 ---
 
+> **Demo en producción:** https://proyecto-m4-henry.vercel.app/
+
 ## Instalación y arranque local
 
 ### 1. Clonar el repositorio
@@ -103,14 +107,50 @@ Sigue el paso anterior para crear y rellenar el archivo `.env`.
 ### 4. Arrancar en local
 
 ```bash
-vercel dev
+npm run dev
 ```
 
-Se usa `vercel dev` en lugar de `npm run dev` porque levanta tanto el frontend de Vite como las Vercel Functions del directorio `api/`. Sin esto, el botón de enviar resumen por email fallará en local.
+La aplicación estará disponible en `http://localhost:5173`. Toda la funcionalidad funciona excepto el botón de enviar resumen por email — la Vercel Function de `api/` solo existe en el servidor de Vercel, no en local.
 
-El `npm run dev` solamente levantara la aplicacion react, funcionara react, firebase **MENOS** el vercel function i entonces no podras enviar emails.
+Para probar el email hay que hacer push y probarlo directamente en producción.
 
-La aplicación estará disponible en `http://localhost:3000`.
+---
+
+### Por qué no funciona `vercel dev`
+
+`vercel dev` levanta Vite y las Vercel Functions juntos, pero entra en conflicto con el `vercel.json`. El rewrite que redirige las rutas SPA a `index.html` intercepta también las peticiones de módulos JavaScript antes de que lleguen a Vite. Vite recibe HTML en lugar de JS y falla con el error `vite:import-analysis`.
+
+En producción esto no ocurre porque Vercel comprueba primero si el archivo existe en el build antes de aplicar el rewrite. En `vercel dev` ese comportamiento es diferente.
+
+---
+
+### Cómo probar el email en local
+
+Si necesitas probar la Vercel Function sin hacer push, la solución es separar los dos procesos y usar el proxy de Vite:
+
+**1.** Añadir en `vite.config.ts`:
+
+```ts
+server: {
+  proxy: {
+    '/api': 'http://localhost:3001'
+  }
+}
+```
+
+**2.** En una terminal, arrancar solo las functions en el puerto 3001:
+
+```bash
+vercel dev --listen 3001
+```
+
+**3.** En otra terminal, arrancar Vite:
+
+```bash
+npm run dev
+```
+
+Vite gestiona el frontend sin conflictos y reenvía las peticiones a `/api/*` al servidor de functions en el puerto 3001.
 
 ---
 
@@ -255,3 +295,58 @@ Implementación del endpoint `api/send-task-summary.ts` como Vercel Function. El
 ### Fase 7 — UI con Bootstrap 5 y HTML semántico
 
 Rediseño visual completo con Bootstrap 5.3: navbar responsive, sidebar con overlay en móvil, formularios con tarjetas de dos columnas, modales para crear tarea y confirmar eliminación. Se aplicó HTML semántico en todos los componentes (`header`, `nav`, `main`, `section`, `article`, `aside`, `footer`, `fieldset`). Se añadió también el diccionario de errores de AWS SES para mostrar mensajes en español en lugar del error crudo del SDK.
+
+---
+
+## Deploy en Vercel
+
+**URL de producción:** https://proyecto-m4-henry.vercel.app/
+
+### Pasos realizados para el despliegue
+
+**1.** Crear el proyecto en [vercel.com](https://vercel.com) y conectarlo al repositorio de GitHub desde el dashboard.
+
+**2.** Iniciar sesión en Vercel desde la terminal:
+
+```bash
+vercel login
+```
+
+**3.** Vincular el directorio local al proyecto de Vercel:
+
+```bash
+vercel link
+```
+
+Seleccionar la cuenta, confirmar que se vincula a un proyecto existente y elegir `proyecto-m4-henry`.
+
+**4.** Añadir las variables de entorno a producción una a una:
+
+```bash
+vercel env add VITE_FIREBASE_API_KEY
+vercel env add VITE_FIREBASE_AUTH_DOMAIN
+vercel env add VITE_FIREBASE_PROJECT_ID
+vercel env add VITE_FIREBASE_STORAGE_BUCKET
+vercel env add VITE_FIREBASE_MESSAGING_SENDER_ID
+vercel env add VITE_FIREBASE_APP_ID
+vercel env add VITE_FIREBASE_MEASUREMENT_ID
+vercel env add AWS_REGION
+vercel env add AWS_ACCESS_KEY_ID
+vercel env add AWS_SECRET_ACCESS_KEY
+vercel env add AWS_SES_FROM_EMAIL
+```
+
+Para cada comando, la CLI pide el valor y el entorno — seleccionar **Production**.
+
+**5.** Subir el código a GitHub para lanzar el primer deploy:
+
+```bash
+git push origin main
+```
+
+Vercel detecta el push, ejecuta `npm run build` y despliega automáticamente. A partir de aquí, cada push a `main` lanza un nuevo deploy.
+
+---
+
+**🔗 App en producción: https://proyecto-m4-henry.vercel.app/**
+
