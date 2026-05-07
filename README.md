@@ -348,5 +348,17 @@ Vercel detecta el push, ejecuta `npm run build` y despliega automáticamente. A 
 
 ---
 
+### Limitación de AWS SES en sandbox
+
+El código del envío de emails funciona correctamente en producción. Sin embargo, AWS SES tiene una restricción operativa importante: todas las cuentas nuevas empiezan en **modo sandbox**, en el que solo se pueden enviar emails a direcciones verificadas manualmente en la consola de AWS.
+
+Para poder enviar emails a cualquier usuario real (no solo a direcciones verificadas), la cuenta de AWS debe obtener **acceso a producción** en la región donde está configurado SES.
+
+AWS recomienda verificar un dominio propio antes de solicitar ese acceso — el proceso está especialmente favorecido para cuentas que tienen un dominio verificado. Sin dominio, la alternativa es verificar una dirección de correo como identidad de envío y solicitar el acceso a producción por otros medios, por ejemplo mediante AWS CLI.
+
+En resumen: el problema no es el código de la aplicación, sino una restricción de Amazon SES. Mientras la cuenta permanezca en sandbox, los correos solo funcionarán con destinatarios verificados. Para un entorno de producción real habría que solicitar la salida del sandbox en la región utilizada.
+
+---
+
 **🔗 App en producción: https://proyecto-m4-henry.vercel.app/**
 
