@@ -25,7 +25,7 @@ export function RegisterPage() {
       await register(email, password);
       navigate("/dashboard");
     } catch (err) {
-      setError(getAuthErrorMessage((err as { code?: string }).code));
+      setError(getAuthErrorMessage((err as { code?: string }).code ?? ''));
     } finally {
       setLoading(false);
     }
